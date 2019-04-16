@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="@/assets/images/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <div v-for="(item, index ) in events" :key="index">
+      <h1>{{ item.event }}</h1>
+    </div>
   </div>
 </template>
 
@@ -14,24 +17,16 @@ export default {
   components: {
     HelloWorld
   },
-  data () {
-    return {
-      info: null,
-      loading: true,
-      errored: false
+  data: () => ({
+    events: []
+  }),
+  async created() {
+    try {
+      const { data } = await axios.get(`http://localhost:8080/dito-questions/events.json`)
+      this.events = data.events
+    } catch (error) {
+      console.log(error)
     }
-  },
-  mounted () {
-    axios
-      .get('http://localhost:8080/dito-questions/events.json')
-      .then(response => {
-        this.info = response.data.bpi
-      })
-      .catch(error => {
-        console.log(error)
-        this.errored = true
-      })
-      // .finally (() => this.loading = false)
   }
 }
 </script>
